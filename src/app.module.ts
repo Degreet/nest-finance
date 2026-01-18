@@ -3,12 +3,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { IamModule } from './iam/iam.module';
 import Joi from '@hapi/joi';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV ?? 'development'}`,
       validationSchema: Joi.object({
         DB_HOST: Joi.required(),
@@ -16,9 +16,14 @@ import Joi from '@hapi/joi';
         DB_USER: Joi.required(),
         DB_PASSWORD: Joi.required(),
         DB_NAME: Joi.required(),
+        JWT_SECRET: Joi.required(),
+        JWT_TOKEN_AUDIENCE: Joi.required(),
+        JWT_TOKEN_ISSUER: Joi.required(),
+        JWT_ACCESS_TOKEN_TTL: Joi.number().default(3600),
       }),
     }),
     TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         return {
@@ -34,6 +39,7 @@ import Joi from '@hapi/joi';
         };
       },
     }),
+    IamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
