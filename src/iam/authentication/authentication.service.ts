@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 import { User } from '../../users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -76,6 +77,20 @@ export class AuthenticationService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync<
+        Pick<ActiveUserData, 'sub'>
+      >(refreshTokenDto.refreshToken, this.jwtConfiguration);
+      const user = await this.userRepository.findOneByOrFail({
+        id: sub,
+      });
+      return this.generateTokens(user);
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 
   private async signToken<T>(userId: number, expiresIn: number, payload?: T) {
