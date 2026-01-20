@@ -57,6 +57,10 @@ export class AuthenticationService {
     if (!user || !isEqual) {
       throw new UnauthorizedException('Invalid credentials');
     }
+    return await this.generateTokens(user);
+  }
+
+  async generateTokens(user: User) {
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Partial<ActiveUserData>>(
         user.id,
