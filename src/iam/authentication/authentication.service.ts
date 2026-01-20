@@ -58,7 +58,7 @@ export class AuthenticationService {
     if (!user || !isEqual) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    return await this.generateTokens(user);
+    return this.generateTokens(user);
   }
 
   async generateTokens(user: User) {
@@ -93,8 +93,8 @@ export class AuthenticationService {
     }
   }
 
-  private async signToken<T>(userId: number, expiresIn: number, payload?: T) {
-    return await this.jwtService.signAsync(
+  private signToken<T>(userId: number, expiresIn: number, payload?: T) {
+    return this.jwtService.signAsync(
       {
         sub: userId,
         ...payload,
