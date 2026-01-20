@@ -57,15 +57,24 @@ export class AuthenticationService {
     if (!user || !isEqual) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const accessToken = await this.signToken<Partial<ActiveUserData>>(
-      user.id,
-      this.jwtConfiguration.accessTokenTtl,
-      { email: user.email },
-    );
-    return { accessToken };
+    const [accessToken, refreshToken] = await Promise.all([
+      this.signToken<Partial<ActiveUserData>>(
+        user.id,
+        this.jwtConfiguration.accessTokenTtl,
+        { email: user.email },
+      ),
+      this.signToken<Partial<ActiveUserData>>(
+        user.id,
+        this.jwtConfiguration.refreshTokenTtl,
+      ),
+    ]);
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
-  private async signToken<T>(userId: number, expiresIn: number, payload: T) {
+  private async signToken<T>(userId: number, expiresIn: number, payload?: T) {
     return await this.jwtService.signAsync(
       {
         sub: userId,
