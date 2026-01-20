@@ -16,6 +16,7 @@ import { Repository } from 'typeorm';
 import { HashingService } from '../hashing/hashing.service';
 import { PostgresErrorCode } from '../../common/enums/postgres-error-code.enum';
 
+import type { ActiveUserData } from '../interfaces/active-user-data.interface';
 import type { ConfigType } from '@nestjs/config';
 import jwtConfig from '../config/jwt.config';
 
@@ -60,7 +61,7 @@ export class AuthenticationService {
       {
         sub: user.id,
         email: user.email,
-      },
+      } as ActiveUserData,
       {
         secret: this.jwtConfiguration.secret,
         issuer: this.jwtConfiguration.issuer,
