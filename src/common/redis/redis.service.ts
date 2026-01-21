@@ -19,7 +19,7 @@ export class RedisService implements OnApplicationShutdown {
   }
 
   onApplicationShutdown() {
-    this.redisClient.quit();
+    return this.redisClient.quit();
   }
 
   getClient() {
