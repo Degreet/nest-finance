@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '../../common/redis/redis.service';
+import { InvalidRefreshTokenError } from './errors/invalid-refresh-token.error';
 
 @Injectable()
 export class RefreshTokenIdsStorage {
@@ -13,7 +14,9 @@ export class RefreshTokenIdsStorage {
   async validate(userId: number, tokenId: string) {
     const redisClient = this.redisService.getClient();
     const storedId = await redisClient.get(this.getKey(userId));
-    return storedId === tokenId;
+    if (storedId === tokenId) {
+      throw new InvalidRefreshTokenError();
+    }
   }
 
   private getKey(userId: number) {
