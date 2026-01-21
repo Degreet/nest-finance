@@ -21,6 +21,8 @@ import type { ActiveUserData } from '../interfaces/active-user-data.interface';
 import type { ConfigType } from '@nestjs/config';
 import jwtConfig from '../config/jwt.config';
 
+import { RefreshTokenData } from './interfaces/refresh-token-data.interface';
+
 @Injectable()
 export class AuthenticationService {
   constructor(
@@ -68,7 +70,7 @@ export class AuthenticationService {
         this.jwtConfiguration.accessTokenTtl,
         { email: user.email },
       ),
-      this.signToken<Partial<ActiveUserData>>(
+      this.signToken<Partial<RefreshTokenData>>(
         user.id,
         this.jwtConfiguration.refreshTokenTtl,
       ),
@@ -81,9 +83,10 @@ export class AuthenticationService {
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
-      const { sub } = await this.jwtService.verifyAsync<
-        Pick<ActiveUserData, 'sub'>
-      >(refreshTokenDto.refreshToken, this.jwtConfiguration);
+      const { sub } = await this.jwtService.verifyAsync<RefreshTokenData>(
+        refreshTokenDto.refreshToken,
+        this.jwtConfiguration,
+      );
       const user = await this.userRepository.findOneByOrFail({
         id: sub,
       });
