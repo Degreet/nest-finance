@@ -89,13 +89,21 @@ export class AuthenticationService {
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
-      const { sub } = await this.jwtService.verifyAsync<RefreshTokenData>(
-        refreshTokenDto.refreshToken,
-        this.jwtConfiguration,
-      );
+      const { sub, refreshTokenId } =
+        await this.jwtService.verifyAsync<RefreshTokenData>(
+          refreshTokenDto.refreshToken,
+          this.jwtConfiguration,
+        );
       const user = await this.userRepository.findOneByOrFail({
         id: sub,
       });
+      const isValid = await this.refreshTokenIdsStorage.validate(
+        user.id,
+        refreshTokenId,
+      );
+      if (!isValid) {
+        throw new Error('Refresh token is invalid');
+      }
       return this.generateTokens(user);
     } catch (err) {
       throw new UnauthorizedException();
