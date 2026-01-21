@@ -24,6 +24,7 @@ import jwtConfig from '../config/jwt.config';
 import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
 import { RefreshTokenData } from './interfaces/refresh-token-data.interface';
 import { randomUUID } from 'node:crypto';
+import { InvalidRefreshTokenError } from './errors/invalid-refresh-token.error';
 
 @Injectable()
 export class AuthenticationService {
@@ -97,15 +98,12 @@ export class AuthenticationService {
       const user = await this.userRepository.findOneByOrFail({
         id: sub,
       });
-      const isValid = await this.refreshTokenIdsStorage.validate(
-        user.id,
-        refreshTokenId,
-      );
-      if (!isValid) {
-        throw new Error('Refresh token is invalid');
-      }
+      await this.refreshTokenIdsStorage.validate(user.id, refreshTokenId);
       return this.generateTokens(user);
     } catch (err) {
+      if (err instanceof InvalidRefreshTokenError) {
+        throw new UnauthorizedException('Access denied');
+      }
       throw new UnauthorizedException();
     }
   }
