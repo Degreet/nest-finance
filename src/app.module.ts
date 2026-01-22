@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
+import { FinanceModule } from './finance/finance.module';
 import Joi from '@hapi/joi';
 
 @Module({
@@ -43,6 +44,7 @@ import Joi from '@hapi/joi';
       },
     }),
     IamModule,
+    FinanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
