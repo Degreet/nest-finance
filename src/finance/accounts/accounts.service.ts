@@ -12,8 +12,17 @@ export class AccountsService {
     private readonly accountRepository: Repository<Account>,
   ) {}
 
-  create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
+  async create(createAccountDto: CreateAccountDto, userId: number) {
+    const account = this.accountRepository.create({
+      ...createAccountDto,
+      user: { id: userId },
+    });
+
+    const saved = await this.accountRepository.save(account);
+
+    return {
+      accountId: saved.id,
+    };
   }
 
   findAll() {
