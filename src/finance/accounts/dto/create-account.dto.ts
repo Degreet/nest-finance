@@ -1,4 +1,10 @@
-import { IsEnum, IsNumber, IsString, Length } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 import { AccountType } from '../enums/account-type.enum';
 
 export class CreateAccountDto {
@@ -12,6 +18,7 @@ export class CreateAccountDto {
   @Length(3, 3)
   currency: string;
 
+  @IsOptional()
   @IsNumber()
   initial_balance: number;
 }
