@@ -25,8 +25,10 @@ export class AccountsService {
     };
   }
 
-  findAll() {
-    return `This action returns all accounts`;
+  findAll(userId: number) {
+    return this.accountRepository.findBy({
+      user: { id: userId },
+    });
   }
 
   findOne(id: number) {

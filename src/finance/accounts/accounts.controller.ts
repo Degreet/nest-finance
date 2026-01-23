@@ -26,8 +26,8 @@ export class AccountsController {
   }
 
   @Get()
-  findAll() {
-    return this.accountsService.findAll();
+  findAll(@ActiveUser() user: ActiveUserData) {
+    return this.accountsService.findAll(user.sub);
   }
 
   @Get(':id')
