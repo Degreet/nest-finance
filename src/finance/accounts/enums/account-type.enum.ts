@@ -1,6 +1,6 @@
 export enum AccountType {
-  MANUAL_CARD = 'MANUAL_CARD',
-  CASH = 'CASH',
-  CREDIT = 'CREDIT',
-  DEBT = 'DEBT',
+  MANUAL_CARD = 'manual_card',
+  CASH = 'cash',
+  CREDIT = 'credit',
+  DEBT = 'debt',
 }
