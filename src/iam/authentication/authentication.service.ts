@@ -39,12 +39,10 @@ export class AuthenticationService {
 
   async signUp(signUpDto: SignUpDto) {
     try {
-      const user = new User();
-
-      Object.assign(user, signUpDto);
-
-      user.password = await this.hashingService.hash(signUpDto.password);
-
+      const user = this.userRepository.create({
+        ...signUpDto,
+        password: await this.hashingService.hash(signUpDto.password),
+      });
       await this.userRepository.save(user);
     } catch (err) {
       if (err.code === PostgresErrorCode.UniqueViolation) {
