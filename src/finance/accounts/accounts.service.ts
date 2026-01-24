@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { Repository } from 'typeorm';
+import { AccountNotFoundException } from './exceptions/account-not-found.exception';
 
 @Injectable()
 export class AccountsService {
@@ -41,7 +42,7 @@ export class AccountsService {
       { ...updateAccountDto },
     );
     if (result.affected === 0) {
-      throw new NotFoundException('Account not found');
+      throw new AccountNotFoundException();
     }
   }
 
@@ -51,7 +52,7 @@ export class AccountsService {
       user: { id: userId },
     });
     if (result.affected === 0) {
-      throw new NotFoundException('Account not found');
+      throw new AccountNotFoundException();
     }
   }
 }
