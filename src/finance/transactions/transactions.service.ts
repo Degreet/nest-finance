@@ -65,7 +65,13 @@ export class TransactionsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  async remove(id: number, userId: number) {
+    const result = await this.transactionRepository.delete({
+      id,
+      user: { id: userId },
+    });
+    if (result.affected === 0) {
+      throw new TransactionNotFoundException();
+    }
   }
 }
