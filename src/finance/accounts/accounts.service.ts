@@ -32,10 +32,6 @@ export class AccountsService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
-  }
-
   async update(id: number, updateAccountDto: UpdateAccountDto, userId: number) {
     const result = await this.accountRepository.update(
       { id, user: { id: userId } },

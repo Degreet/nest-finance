@@ -31,11 +31,6 @@ export class AccountsController {
     return this.accountsService.findAll(user.sub);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountsService.findOne(+id);
-  }
-
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
