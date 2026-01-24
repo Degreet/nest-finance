@@ -25,6 +25,7 @@ export class TransactionsService {
 
       const transaction = this.transactionRepository.create({
         ...createTransactionDto,
+        user: { id: userId },
         account,
       });
 
