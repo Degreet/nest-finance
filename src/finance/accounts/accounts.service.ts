@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,8 +35,14 @@ export class AccountsService {
     return `This action returns a #${id} account`;
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  async update(id: number, updateAccountDto: UpdateAccountDto, userId: number) {
+    const result = await this.accountRepository.update(
+      { id, user: { id: userId } },
+      { ...updateAccountDto },
+    );
+    if (result.affected === 0) {
+      throw new NotFoundException('Account not found');
+    }
   }
 
   remove(id: number) {
