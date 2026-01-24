@@ -6,6 +6,7 @@ import { Transaction } from './entities/transaction.entity';
 import { EntityNotFoundError, Repository } from 'typeorm';
 import { AccountNotFoundException } from '../accounts/exceptions/account-not-found.exception';
 import { Account } from '../accounts/entities/account.entity';
+import { TransactionNotFoundException } from './exceptions/transaction-not-found.exception';
 
 @Injectable()
 export class TransactionsService {
@@ -50,8 +51,18 @@ export class TransactionsService {
     return `This action returns a #${id} transaction`;
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  async update(
+    id: number,
+    updateTransactionDto: UpdateTransactionDto,
+    userId: number,
+  ) {
+    const result = await this.transactionRepository.update(
+      { id, user: { id: userId } },
+      { ...updateTransactionDto },
+    );
+    if (result.affected === 0) {
+      throw new TransactionNotFoundException();
+    }
   }
 
   remove(id: number) {
