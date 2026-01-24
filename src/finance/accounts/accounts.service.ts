@@ -45,7 +45,13 @@ export class AccountsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async remove(id: number, userId: number) {
+    const result = await this.accountRepository.delete({
+      id,
+      user: { id: userId },
+    });
+    if (result.affected === 0) {
+      throw new NotFoundException('Account not found');
+    }
   }
 }
