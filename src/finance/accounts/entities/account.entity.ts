@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../../users/entities/user.entity';
 import { AccountType } from '../enums/account-type.enum';
+import { Transaction } from '../../transactions/entities/transaction.entity';
 
 @Entity()
 export class Account {
@@ -28,6 +30,9 @@ export class Account {
 
   @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
   balance: number;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.account)
+  transactions: Transaction[];
 
   @CreateDateColumn()
   createdAt: Date;
