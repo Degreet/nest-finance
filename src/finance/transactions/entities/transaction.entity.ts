@@ -23,6 +23,9 @@ export class Transaction {
   })
   account: Account;
 
+  @Column()
+  accountId: number;
+
   @ManyToOne(() => User, (user) => user.transactions)
   user: User;
 

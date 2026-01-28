@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { ActiveUser } from '../../iam/decorators/active-user.decorator';
 import type { ActiveUserData } from '../../iam/interfaces/active-user-data.interface';
+import { FindTransactionsQueryDto } from './dto/find-transactions-query.dto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -27,8 +29,11 @@ export class TransactionsController {
   }
 
   @Get()
-  findAll() {
-    return this.transactionsService.findAll();
+  findAll(
+    @Query() findTransactionsQueryDto: FindTransactionsQueryDto,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.transactionsService.findAll(findTransactionsQueryDto, user.sub);
   }
 
   @Get(':id')

@@ -1,0 +1,1 @@
+export const DEFAULT_TRANSACTIONS_LIMIT = 10;
