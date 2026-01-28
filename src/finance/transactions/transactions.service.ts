@@ -78,10 +78,6 @@ export class TransactionsService {
       .getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
-  }
-
   async update(
     id: number,
     updateTransactionDto: UpdateTransactionDto,

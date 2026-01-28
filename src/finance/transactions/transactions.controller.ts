@@ -36,11 +36,6 @@ export class TransactionsController {
     return this.transactionsService.findAll(findTransactionsQueryDto, user.sub);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionsService.findOne(+id);
-  }
-
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
