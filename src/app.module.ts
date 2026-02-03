@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
 import { FinanceModule } from './finance/finance.module';
 import Joi from '@hapi/joi';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import Joi from '@hapi/joi';
         };
       },
     }),
+    CqrsModule.forRoot(),
     IamModule,
     FinanceModule,
   ],
