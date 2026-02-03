@@ -4,8 +4,8 @@ import {
   IsEnum,
   IsNumber,
   IsOptional,
-  IsPositive,
   IsString,
+  Matches,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -16,9 +16,9 @@ export class CreateTransactionDto {
   @IsNumber()
   accountId: number;
 
-  @IsNumber()
-  @IsPositive()
-  amount: number;
+  @IsString()
+  @Matches(/^\d+\.\d{2}$/)
+  amount: string;
 
   @IsString()
   category: string;
