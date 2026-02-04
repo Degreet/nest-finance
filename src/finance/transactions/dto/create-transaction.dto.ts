@@ -17,7 +17,9 @@ export class CreateTransactionDto {
   accountId: number;
 
   @IsString()
-  @Matches(/^\d+\.\d{2}$/)
+  @Matches(/^\d+\.\d{2}$/, {
+    message: 'amount must be in the format 123.45',
+  })
   amount: string;
 
   @IsString()
