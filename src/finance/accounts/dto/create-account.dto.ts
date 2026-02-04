@@ -15,7 +15,7 @@ export class CreateAccountDto {
   @IsOptional()
   @IsString()
   @Matches(/^\d+\.\d{2}$/, {
-    message: 'initial_balance must be in the format 123.45',
+    message: 'balance must be in the format 123.45',
   })
-  initial_balance: string;
+  balance: string;
 }
