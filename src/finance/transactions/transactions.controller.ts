@@ -16,10 +16,10 @@ import { ActiveUser } from '../../iam/decorators/active-user.decorator';
 import type { ActiveUserData } from '../../iam/interfaces/active-user-data.interface';
 import { FindTransactionsQueryDto } from './dto/find-transactions-query.dto';
 import { CommandBus } from '@nestjs/cqrs';
-import { CreateTransactionCommand } from './commands/create-transaction/create-transaction.command';
-import { CreateTransactionResult } from './commands/create-transaction/create-transaction-result.interface';
-import { UpdateTransactionCommand } from './commands/update-transaction/update-transaction.command';
-import { RemoveTransactionCommand } from './commands/remove-transaction/remove-transaction.command';
+import { RecordTransactionCommand } from './commands/record-transaction/record-transaction.command';
+import { RecordTransactionResult } from './commands/record-transaction/record-transaction-result.interface';
+import { AdjustTransactionCommand } from './commands/adjust-transaction/adjust-transaction.command';
+import { VoidTransactionCommand } from './commands/void-transaction/void-transaction.command';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -32,8 +32,8 @@ export class TransactionsController {
   create(
     @Body() createTransactionDto: CreateTransactionDto,
     @ActiveUser() user: ActiveUserData,
-  ): Promise<CreateTransactionResult> {
-    const command = new CreateTransactionCommand(
+  ): Promise<RecordTransactionResult> {
+    const command = new RecordTransactionCommand(
       createTransactionDto.type,
       user.sub,
       createTransactionDto.accountId,
@@ -59,7 +59,7 @@ export class TransactionsController {
     @Body() updateTransactionDto: UpdateTransactionDto,
     @ActiveUser() user: ActiveUserData,
   ) {
-    const command = new UpdateTransactionCommand(
+    const command = new AdjustTransactionCommand(
       user.sub,
       id,
       updateTransactionDto.amount,
@@ -75,7 +75,7 @@ export class TransactionsController {
     @Param('id', ParseIntPipe) id: number,
     @ActiveUser() user: ActiveUserData,
   ) {
-    const command = new RemoveTransactionCommand(user.sub, id);
+    const command = new VoidTransactionCommand(user.sub, id);
     return this.commandBus.execute(command);
   }
 }

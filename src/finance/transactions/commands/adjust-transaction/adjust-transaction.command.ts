@@ -1,4 +1,4 @@
-export class UpdateTransactionCommand {
+export class AdjustTransactionCommand {
   constructor(
     public readonly userId: number,
     public readonly transactionId: number,

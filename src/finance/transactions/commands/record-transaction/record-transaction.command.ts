@@ -1,6 +1,6 @@
 import { TransactionType } from '../../enums/transaction-type.enum';
 
-export class CreateTransactionCommand {
+export class RecordTransactionCommand {
   constructor(
     public readonly type: TransactionType,
     public readonly userId: number,

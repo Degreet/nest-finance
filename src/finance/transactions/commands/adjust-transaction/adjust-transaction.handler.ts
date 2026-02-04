@@ -2,16 +2,16 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DataSource } from 'typeorm';
 import Decimal from 'decimal.js';
 
-import { UpdateTransactionCommand } from './update-transaction.command';
+import { AdjustTransactionCommand } from './adjust-transaction.command';
 import { Transaction } from '../../entities/transaction.entity';
 import { TransactionType } from '../../enums/transaction-type.enum';
 import { TransactionNotFoundException } from '../../exceptions/transaction-not-found.exception';
 
-@CommandHandler(UpdateTransactionCommand)
-export class UpdateTransactionHandler implements ICommandHandler<UpdateTransactionCommand> {
+@CommandHandler(AdjustTransactionCommand)
+export class AdjustTransactionHandler implements ICommandHandler<AdjustTransactionCommand> {
   constructor(private readonly dataSource: DataSource) {}
 
-  execute(command: UpdateTransactionCommand) {
+  execute(command: AdjustTransactionCommand) {
     return this.dataSource.transaction(async (manager) => {
       const needsAccount = command.amount !== undefined;
       const transaction = await manager.findOne(Transaction, {

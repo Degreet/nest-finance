@@ -4,18 +4,18 @@ import { TransactionsController } from './transactions.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { Account } from '../accounts/entities/account.entity';
-import { CreateTransactionHandler } from './commands/create-transaction/create-transaction.handler';
-import { UpdateTransactionHandler } from './commands/update-transaction/update-transaction.handler';
-import { RemoveTransactionHandler } from './commands/remove-transaction/remove-transaction.handler';
+import { RecordTransactionHandler } from './commands/record-transaction/record-transaction.handler';
+import { AdjustTransactionHandler } from './commands/adjust-transaction/adjust-transaction.handler';
+import { VoidTransactionHandler } from './commands/void-transaction/void-transaction.handler';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Transaction, Account])],
   controllers: [TransactionsController],
   providers: [
     TransactionsService,
-    CreateTransactionHandler,
-    UpdateTransactionHandler,
-    RemoveTransactionHandler,
+    RecordTransactionHandler,
+    AdjustTransactionHandler,
+    VoidTransactionHandler,
   ],
 })
 export class TransactionsModule {}
