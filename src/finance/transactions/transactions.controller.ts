@@ -18,6 +18,7 @@ import { FindTransactionsQueryDto } from './dto/find-transactions-query.dto';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateTransactionCommand } from './commands/create-transaction/create-transaction.command';
 import { CreateTransactionResult } from './commands/create-transaction/create-transaction-result.interface';
+import { UpdateTransactionCommand } from './commands/update-transaction/update-transaction.command';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -57,7 +58,15 @@ export class TransactionsController {
     @Body() updateTransactionDto: UpdateTransactionDto,
     @ActiveUser() user: ActiveUserData,
   ) {
-    return this.transactionsService.update(id, updateTransactionDto, user.sub);
+    const command = new UpdateTransactionCommand(
+      user.sub,
+      id,
+      updateTransactionDto.amount,
+      updateTransactionDto.category,
+      updateTransactionDto.date,
+      updateTransactionDto.description,
+    );
+    return this.commandBus.execute(command);
   }
 
   @Delete(':id')

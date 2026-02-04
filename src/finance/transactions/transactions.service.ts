@@ -47,20 +47,6 @@ export class TransactionsService {
       .getMany();
   }
 
-  async update(
-    id: number,
-    updateTransactionDto: UpdateTransactionDto,
-    userId: number,
-  ) {
-    const result = await this.transactionRepository.update(
-      { id, user: { id: userId } },
-      { ...updateTransactionDto },
-    );
-    if (result.affected === 0) {
-      throw new TransactionNotFoundException();
-    }
-  }
-
   async remove(id: number, userId: number) {
     const result = await this.transactionRepository.delete({
       id,
