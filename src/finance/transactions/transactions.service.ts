@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
 import { Repository } from 'typeorm';
-import { TransactionNotFoundException } from './exceptions/transaction-not-found.exception';
 import { FindTransactionsQueryDto } from './dto/find-transactions-query.dto';
 import { DEFAULT_TRANSACTIONS_LIMIT } from './transactions.constants';
 
@@ -45,15 +43,5 @@ export class TransactionsService {
       .orderBy('transaction.id', 'DESC')
       .limit(findTransactionsQueryDto.limit ?? DEFAULT_TRANSACTIONS_LIMIT)
       .getMany();
-  }
-
-  async remove(id: number, userId: number) {
-    const result = await this.transactionRepository.delete({
-      id,
-      user: { id: userId },
-    });
-    if (result.affected === 0) {
-      throw new TransactionNotFoundException();
-    }
   }
 }

@@ -19,6 +19,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateTransactionCommand } from './commands/create-transaction/create-transaction.command';
 import { CreateTransactionResult } from './commands/create-transaction/create-transaction-result.interface';
 import { UpdateTransactionCommand } from './commands/update-transaction/update-transaction.command';
+import { RemoveTransactionCommand } from './commands/remove-transaction/remove-transaction.command';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -74,6 +75,7 @@ export class TransactionsController {
     @Param('id', ParseIntPipe) id: number,
     @ActiveUser() user: ActiveUserData,
   ) {
-    return this.transactionsService.remove(id, user.sub);
+    const command = new RemoveTransactionCommand(user.sub, id);
+    return this.commandBus.execute(command);
   }
 }
