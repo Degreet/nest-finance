@@ -29,7 +29,7 @@ export class Account {
   currency: string;
 
   @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
-  balance: number;
+  balance: string;
 
   @OneToMany(() => Transaction, (transaction) => transaction.account)
   transactions: Transaction[];

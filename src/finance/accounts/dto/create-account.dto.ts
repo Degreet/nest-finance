@@ -1,10 +1,4 @@
-import {
-  IsEnum,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsEnum, IsOptional, IsString, Length, Matches } from 'class-validator';
 import { AccountType } from '../enums/account-type.enum';
 
 export class CreateAccountDto {
@@ -19,6 +13,9 @@ export class CreateAccountDto {
   currency: string;
 
   @IsOptional()
-  @IsNumber()
-  initial_balance: number;
+  @IsString()
+  @Matches(/^\d+\.\d{2}$/, {
+    message: 'balance must be in the format 123.45',
+  })
+  balance: string;
 }

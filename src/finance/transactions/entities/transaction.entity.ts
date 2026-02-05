@@ -30,7 +30,7 @@ export class Transaction {
   user: User;
 
   @Column({ type: 'decimal', precision: 15, scale: 2 })
-  amount: number;
+  amount: string;
 
   @Column()
   category: string;
