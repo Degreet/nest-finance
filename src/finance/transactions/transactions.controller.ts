@@ -38,7 +38,7 @@ export class TransactionsController {
       user.sub,
       createTransactionDto.accountId,
       createTransactionDto.amount,
-      createTransactionDto.category,
+      createTransactionDto.categoryId,
       createTransactionDto.date,
       createTransactionDto.description,
     );
@@ -63,7 +63,7 @@ export class TransactionsController {
       user.sub,
       id,
       updateTransactionDto.amount,
-      updateTransactionDto.category,
+      updateTransactionDto.categoryId,
       updateTransactionDto.date,
       updateTransactionDto.description,
     );

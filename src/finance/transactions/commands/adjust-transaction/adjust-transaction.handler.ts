@@ -6,6 +6,8 @@ import { AdjustTransactionCommand } from './adjust-transaction.command';
 import { Transaction } from '../../entities/transaction.entity';
 import { TransactionType } from '../../enums/transaction-type.enum';
 import { TransactionNotFoundException } from '../../exceptions/transaction-not-found.exception';
+import { Category } from '../../../categories/entities/category.entity';
+import { CategoryNotFoundException } from '../../../categories/exceptions/category-not-found.exception';
 
 @CommandHandler(AdjustTransactionCommand)
 export class AdjustTransactionHandler implements ICommandHandler<AdjustTransactionCommand> {
@@ -25,12 +27,23 @@ export class AdjustTransactionHandler implements ICommandHandler<AdjustTransacti
         throw new TransactionNotFoundException();
       }
 
+      if (command.categoryId !== undefined) {
+        const category = await manager.findOneBy(Category, {
+          id: command.categoryId,
+          user: { id: command.userId },
+          type: transaction.type,
+        });
+        if (!category) {
+          throw new CategoryNotFoundException();
+        }
+        transaction.category = category;
+      }
+
       const oldAmount = transaction.amount;
       const newAmount = command.amount;
 
       Object.assign(transaction, {
         amount: newAmount,
-        category: command.category,
         date: command.date,
         description: command.description,
       });
