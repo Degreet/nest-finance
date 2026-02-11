@@ -23,4 +23,11 @@ jobs:
             git pull origin main
             npm ci
             npm run build
+            
+            echo "🗄️ Running migrations..."
+            npm run migration:run || exit 1
+            
+            echo "🔄 Restarting PM2..."
             pm2 restart nestfinance
+            
+            echo "✅ Deployment completed!"
