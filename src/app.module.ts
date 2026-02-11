@@ -43,7 +43,7 @@ import { CqrsModule } from '@nestjs/cqrs';
             ? { rejectUnauthorized: true }
             : false,
           autoLoadEntities: true,
-          synchronize: process.env.NODE_ENV !== 'production',
+          synchronize: process.env.NODE_ENV === 'development',
           logging: process.env.NODE_ENV === 'development',
         };
       },
