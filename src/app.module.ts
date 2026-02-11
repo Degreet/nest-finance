@@ -18,6 +18,7 @@ import { CqrsModule } from '@nestjs/cqrs';
         DB_USER: Joi.required(),
         DB_PASSWORD: Joi.required(),
         DB_NAME: Joi.required(),
+        DB_SSL: Joi.boolean().default(false),
         JWT_SECRET: Joi.required(),
         JWT_TOKEN_AUDIENCE: Joi.required(),
         JWT_TOKEN_ISSUER: Joi.required(),
@@ -38,6 +39,9 @@ import { CqrsModule } from '@nestjs/cqrs';
           username: configService.get('DB_USER'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_NAME'),
+          ssl: configService.get<boolean>('DB_SSL')
+            ? { rejectUnauthorized: true }
+            : false,
           autoLoadEntities: true,
           synchronize: process.env.NODE_ENV !== 'production',
           logging: process.env.NODE_ENV === 'development',
