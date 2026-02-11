@@ -40,7 +40,7 @@ import { CqrsModule } from '@nestjs/cqrs';
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_NAME'),
           ssl: configService.get<boolean>('DB_SSL')
-            ? { rejectUnauthorized: true }
+            ? { rejectUnauthorized: false }
             : false,
           autoLoadEntities: true,
           synchronize: process.env.NODE_ENV === 'development',
