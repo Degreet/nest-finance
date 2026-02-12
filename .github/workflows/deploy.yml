@@ -1,0 +1,33 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            
+            cd ~/nest-finance
+            git pull origin main
+            npm ci
+            npm run build
+            
+            echo "🗄️ Running migrations..."
+            npm run migration:run || exit 1
+            
+            echo "🔄 Restarting PM2..."
+            pm2 restart nestfinance
+            
+            echo "✅ Deployment completed!"

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
@@ -19,6 +18,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         DB_USER: Joi.required(),
         DB_PASSWORD: Joi.required(),
         DB_NAME: Joi.required(),
+        DB_SSL: Joi.boolean().default(false),
         JWT_SECRET: Joi.required(),
         JWT_TOKEN_AUDIENCE: Joi.required(),
         JWT_TOKEN_ISSUER: Joi.required(),
@@ -39,8 +39,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
           username: configService.get('DB_USER'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_NAME'),
+          ssl: configService.get<boolean>('DB_SSL')
+            ? { rejectUnauthorized: false }
+            : false,
           autoLoadEntities: true,
-          synchronize: process.env.NODE_ENV !== 'production',
+          synchronize: process.env.NODE_ENV === 'development',
           logging: process.env.NODE_ENV === 'development',
         };
       },
@@ -51,6 +54,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     FinanceModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

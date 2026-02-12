@@ -14,7 +14,7 @@ export class RefreshTokenIdsStorage {
   async validate(userId: number, tokenId: string) {
     const redisClient = this.redisService.getClient();
     const storedId = await redisClient.get(this.getKey(userId));
-    if (storedId === tokenId) {
+    if (storedId !== tokenId) {
       throw new InvalidRefreshTokenError();
     }
   }
