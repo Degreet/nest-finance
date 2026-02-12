@@ -6,7 +6,7 @@ export class RecordTransactionCommand {
     public readonly userId: number,
     public readonly accountId: number,
     public readonly amount: string,
-    public readonly category: string,
+    public readonly categoryId: number,
     public readonly date: Date,
     public readonly description?: string,
   ) {}

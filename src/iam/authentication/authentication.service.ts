@@ -25,6 +25,11 @@ import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
 import { RefreshTokenData } from './interfaces/refresh-token-data.interface';
 import { randomUUID } from 'node:crypto';
 import { InvalidRefreshTokenError } from './errors/invalid-refresh-token.error';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import {
+  USER_REGISTERED,
+  UserRegisteredEvent,
+} from '../events/user-registered.event';
 
 @Injectable()
 export class AuthenticationService {
@@ -35,6 +40,7 @@ export class AuthenticationService {
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
@@ -43,7 +49,11 @@ export class AuthenticationService {
         ...signUpDto,
         password: await this.hashingService.hash(signUpDto.password),
       });
-      await this.userRepository.save(user);
+      const saved = await this.userRepository.save(user);
+      this.eventEmitter.emit(
+        USER_REGISTERED,
+        new UserRegisteredEvent(saved.id),
+      );
     } catch (err) {
       if (err.code === PostgresErrorCode.UniqueViolation) {
         throw new ConflictException('Email already exists');

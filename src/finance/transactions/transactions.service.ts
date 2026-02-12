@@ -21,10 +21,11 @@ export class TransactionsService {
         'transaction.date',
         'transaction.description',
         'transaction.type',
-        'transaction.category',
         'transaction.createdAt',
         'transaction.accountId',
       ])
+      .leftJoin('transaction.category', 'category')
+      .addSelect(['category.id', 'category.name', 'category.type'])
       .where('transaction.userId = :userId', { userId });
 
     if (findTransactionsQueryDto.cursor !== undefined) {

@@ -9,6 +9,7 @@ import {
 import { Account } from '../../accounts/entities/account.entity';
 import { TransactionType } from '../enums/transaction-type.enum';
 import { User } from '../../../users/entities/user.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity()
 export class Transaction {
@@ -32,8 +33,10 @@ export class Transaction {
   @Column({ type: 'decimal', precision: 15, scale: 2 })
   amount: string;
 
-  @Column()
-  category: string;
+  @ManyToOne(() => Category, (category) => category.transactions, {
+    onDelete: 'SET NULL',
+  })
+  category: Category;
 
   @Column({ nullable: true })
   description: string;
