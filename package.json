@@ -21,6 +21,7 @@
     "migration:run": "npx typeorm-ts-node-commonjs migration:run -d ./data-source.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.989.0",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
