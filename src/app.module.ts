@@ -7,6 +7,7 @@ import { FinanceModule } from './finance/finance.module';
 import Joi from '@hapi/joi';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CloudWatchModule } from './cloudwatch/cloudwatch.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     EventEmitterModule.forRoot(),
     IamModule,
     FinanceModule,
+    ...(process.env.NODE_ENV === 'production' ? [CloudWatchModule] : []),
   ],
   controllers: [AppController],
   providers: [],
