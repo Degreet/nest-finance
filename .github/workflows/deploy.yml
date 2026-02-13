@@ -21,7 +21,7 @@ jobs:
             
             cd ~/nest-finance
             git pull origin main
-            npm ci
+            npm ci --omit=dev --prefer-offline --loglevel=verbose
             npm run build
             
             echo "🗄️ Running migrations..."
