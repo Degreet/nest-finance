@@ -7,12 +7,16 @@ import { FinanceModule } from './finance/finance.module';
 import Joi from '@hapi/joi';
 import { CqrsModule } from '@nestjs/cqrs';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CloudWatchModule } from './cloudwatch/cloudwatch.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.NODE_ENV ?? 'development'}`,
       validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'staging', 'test')
+          .default('development'),
         DB_HOST: Joi.required(),
         DB_PORT: Joi.number().default(5432),
         DB_USER: Joi.required(),
@@ -26,6 +30,16 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         JWT_REFRESH_TOKEN_TTL: Joi.number().default(86400),
         REDIS_HOST: Joi.string().default('localhost'),
         REDIS_PORT: Joi.number().default(6379),
+        AWS_REGION: Joi.when('NODE_ENV', {
+          is: 'production',
+          then: Joi.string().required(),
+          otherwise: Joi.string().optional(),
+        }),
+        CLOUDWATCH_NAMESPACE: Joi.when('NODE_ENV', {
+          is: 'production',
+          then: Joi.string().required(),
+          otherwise: Joi.string().optional(),
+        }),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -52,6 +66,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     EventEmitterModule.forRoot(),
     IamModule,
     FinanceModule,
+    ...(process.env.NODE_ENV === 'production' ? [CloudWatchModule] : []),
   ],
   controllers: [AppController],
   providers: [],
