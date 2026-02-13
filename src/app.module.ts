@@ -13,6 +13,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ConfigModule.forRoot({
       envFilePath: `.env.${process.env.NODE_ENV ?? 'development'}`,
       validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'staging', 'test')
+          .default('development'),
         DB_HOST: Joi.required(),
         DB_PORT: Joi.number().default(5432),
         DB_USER: Joi.required(),
@@ -26,6 +29,16 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         JWT_REFRESH_TOKEN_TTL: Joi.number().default(86400),
         REDIS_HOST: Joi.string().default('localhost'),
         REDIS_PORT: Joi.number().default(6379),
+        AWS_REGION: Joi.when('NODE_ENV', {
+          is: 'production',
+          then: Joi.string().required(),
+          otherwise: Joi.string().optional(),
+        }),
+        CLOUDWATCH_NAMESPACE: Joi.when('NODE_ENV', {
+          is: 'production',
+          then: Joi.string().required(),
+          otherwise: Joi.string().optional(),
+        }),
       }),
     }),
     TypeOrmModule.forRootAsync({
