@@ -6,6 +6,8 @@ import {
 } from './cloudwatch.constants';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { RequestMetricsInterceptor } from './interceptors/request-metrics.interceptor';
 
 @Module({
   imports: [ConfigModule],
@@ -25,6 +27,10 @@ import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
       useFactory: (configService: ConfigService) =>
         configService.get('CLOUDWATCH_NAMESPACE'),
       inject: [ConfigService],
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RequestMetricsInterceptor,
     },
   ],
 })
