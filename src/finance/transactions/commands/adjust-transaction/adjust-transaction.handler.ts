@@ -1,17 +1,19 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DataSource } from 'typeorm';
-import Decimal from 'decimal.js';
 
 import { AdjustTransactionCommand } from './adjust-transaction.command';
 import { Transaction } from '../../entities/transaction.entity';
-import { TransactionType } from '../../enums/transaction-type.enum';
 import { TransactionNotFoundException } from '../../exceptions/transaction-not-found.exception';
 import { Category } from '../../../categories/entities/category.entity';
 import { CategoryNotFoundException } from '../../../categories/exceptions/category-not-found.exception';
+import { FinanceStrategiesService } from '../../../strategies/finance-strategies.service';
 
 @CommandHandler(AdjustTransactionCommand)
 export class AdjustTransactionHandler implements ICommandHandler<AdjustTransactionCommand> {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly financeStrategiesService: FinanceStrategiesService,
+  ) {}
 
   execute(command: AdjustTransactionCommand) {
     return this.dataSource.transaction(async (manager) => {
@@ -49,14 +51,10 @@ export class AdjustTransactionHandler implements ICommandHandler<AdjustTransacti
       });
 
       if (needsAccount && newAmount && oldAmount !== newAmount) {
-        const { account } = transaction;
-        const balance = new Decimal(account.balance);
-        if (transaction.type === TransactionType.INCOME) {
-          account.balance = balance.minus(oldAmount).plus(newAmount).toString();
-        } else if (transaction.type === TransactionType.EXPENSE) {
-          account.balance = balance.plus(oldAmount).minus(newAmount).toString();
-        }
-        await manager.save(account);
+        const { account, type } = transaction;
+        const strategy = this.financeStrategiesService.getStrategy(type);
+        await strategy.void(manager, { account, amount: oldAmount });
+        await strategy.record(manager, { account, amount: newAmount });
       }
 
       await manager.save(transaction);

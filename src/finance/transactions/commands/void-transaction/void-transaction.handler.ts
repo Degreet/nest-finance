@@ -1,15 +1,17 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { DataSource } from 'typeorm';
-import Decimal from 'decimal.js';
 
 import { VoidTransactionCommand } from './void-transaction.command';
 import { Transaction } from '../../entities/transaction.entity';
-import { TransactionType } from '../../enums/transaction-type.enum';
 import { TransactionNotFoundException } from '../../exceptions/transaction-not-found.exception';
+import { FinanceStrategiesService } from '../../../strategies/finance-strategies.service';
 
 @CommandHandler(VoidTransactionCommand)
 export class VoidTransactionHandler implements ICommandHandler<VoidTransactionCommand> {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly financeStrategiesService: FinanceStrategiesService,
+  ) {}
 
   execute(command: VoidTransactionCommand) {
     return this.dataSource.transaction(async (manager) => {
@@ -24,16 +26,11 @@ export class VoidTransactionHandler implements ICommandHandler<VoidTransactionCo
         throw new TransactionNotFoundException();
       }
 
-      const { account, amount } = transaction;
-      const balance = new Decimal(account.balance);
+      const { account, amount, type } = transaction;
 
-      if (transaction.type === TransactionType.INCOME) {
-        account.balance = balance.minus(amount).toString();
-      } else if (transaction.type === TransactionType.EXPENSE) {
-        account.balance = balance.plus(amount).toString();
-      }
+      const strategy = this.financeStrategiesService.getStrategy(type);
+      await strategy.void(manager, { account, amount });
 
-      await manager.save(account);
       await manager.remove(transaction);
     });
   }
