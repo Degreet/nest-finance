@@ -6,9 +6,10 @@ import { Transaction } from './entities/transaction.entity';
 import { RecordTransactionHandler } from './commands/record-transaction/record-transaction.handler';
 import { AdjustTransactionHandler } from './commands/adjust-transaction/adjust-transaction.handler';
 import { VoidTransactionHandler } from './commands/void-transaction/void-transaction.handler';
+import { StrategiesModule } from '../strategies/strategies.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Transaction])],
+  imports: [TypeOrmModule.forFeature([Transaction]), StrategiesModule],
   controllers: [TransactionsController],
   providers: [
     TransactionsService,
