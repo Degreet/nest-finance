@@ -5,7 +5,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
 import { FinanceModule } from './finance/finance.module';
 import Joi from '@hapi/joi';
-import { CqrsModule } from '@nestjs/cqrs';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CloudWatchModule } from './cloudwatch/cloudwatch.module';
 
@@ -62,7 +61,6 @@ import { CloudWatchModule } from './cloudwatch/cloudwatch.module';
         };
       },
     }),
-    CqrsModule.forRoot(),
     EventEmitterModule.forRoot(),
     IamModule,
     FinanceModule,

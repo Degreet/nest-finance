@@ -9,5 +9,6 @@ import { SeedDefaultCategoriesListener } from './listeners/seed-default-categori
   imports: [TypeOrmModule.forFeature([Category])],
   controllers: [CategoriesController],
   providers: [CategoriesService, SeedDefaultCategoriesListener],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}

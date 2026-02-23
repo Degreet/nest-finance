@@ -3,7 +3,7 @@ import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { AccountNotFoundException } from './exceptions/account-not-found.exception';
 
 @Injectable()
@@ -30,6 +30,17 @@ export class AccountsService {
     return this.accountRepository.findBy({
       user: { id: userId },
     });
+  }
+
+  async findOneOrFail(manager: EntityManager, id: number, userId: number) {
+    const entity = await manager.findOneBy(Account, {
+      id,
+      user: { id: userId },
+    });
+    if (!entity) {
+      throw new AccountNotFoundException();
+    }
+    return entity;
   }
 
   async update(id: number, updateAccountDto: UpdateAccountDto, userId: number) {
