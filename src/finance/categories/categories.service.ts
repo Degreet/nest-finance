@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PREDEFINED_CATEGORIES } from './categories.constants';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryNotFoundException } from './exceptions/category-not-found.exception';
+import { TransactionType } from '../transactions/enums/transaction-type.enum';
 
 @Injectable()
 export class CategoriesService {
@@ -44,6 +45,23 @@ export class CategoriesService {
       select: ['id', 'name', 'type'],
       order: { id: 'ASC' },
     });
+  }
+
+  async findOneOrFail(
+    manager: EntityManager,
+    id: number,
+    userId: number,
+    type?: TransactionType,
+  ) {
+    const entity = await manager.findOneBy(Category, {
+      id,
+      user: { id: userId },
+      type,
+    });
+    if (!entity) {
+      throw new CategoryNotFoundException();
+    }
+    return entity;
   }
 
   async update(
