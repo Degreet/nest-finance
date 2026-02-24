@@ -1,54 +1,78 @@
 # 🏦 NestFinance
 
-**Because your money deserves a clean architecture. 🚀**
+**Because your money deserves a clean architecture.**
 
-Welcome to **NestFinance** — a high-performance, domain-driven financial engine built with **NestJS**. This isn't just another CRUD app; it's a Playground for professional backend patterns, precise calculations, and scalable architecture.
+**NestFinance** is a financial management REST API built with **NestJS** — not just another CRUD app, but a playground for professional backend patterns, precise calculations, and scalable architecture.
 
-I started this project to move beyond "just coding" and dive deep into how real-world financial systems work. It’s built with passion, caffeine, and a lot of thinking about **SOLID** principles. 🧪
+I started this project to move beyond "just shipping features" and build something where every layer has a reason to exist and every abstraction earns its place. Built with passion, caffeine, and a lot of thinking about **SOLID** principles. 🧪
 
-## 🌟 The Core (MVP) — What's under the hood?
+## 🛠 Tech Stack
 
-We’ve already laid a rock-solid foundation. No floating-point bugs here!
+<img src="https://skillicons.dev/icons?i=nodejs,ts,nestjs,postgres,redis,docker,aws" />
 
-- **Secure Auth:** Full Authentication & Authorization flow using JWT and custom `@ActiveUser` decorators.
-- **Account Management:** Create and manage your accounts with ease.
-- **Transaction Engine:** Record, Adjust, and Void transactions (Income/Expense) with a clean CQRS flow.
-- **Balance Sync:** Real-time account balance synchronization.
-- **Financial Precision:** Powered by `decimal.js` to ensure every cent is accounted for. No `0.1 + 0.2 = 0.30000000000000004` nonsense! 🧮
-- **Strict Validation:** Using forbidNonWhitelisted to keep our API clean and predictable.
+| Layer | Technology |
+|---|---|
+| Framework | NestJS, TypeScript |
+| Database | PostgreSQL + TypeORM |
+| Cache / Queue | Redis |
+| Containerization | Docker |
+| Infrastructure | AWS EC2, AWS RDS |
+| Observability | AWS CloudWatch |
+| CI/CD | GitHub Actions |
 
-## 🚀 The Vision (Roadmap to "Dream Project")
+## 🌟 What's under the hood
 
-I’m not stopping at the MVP. Here’s how this engine is going to evolve from a "Minimum" to a "**Really Viable Product**" (RVP). 💎
-
-### 🛠 Phase 2: Middle Viable Product (The "Pro" Feel)
-
-- **Smart Categories:** Predefined and custom categories, separated by transaction types (Income vs Expense).
-- **Strategy Pattern:** Replacing "dumb" if/else logic with custom **Operation Strategies** for financial maneuvers. 🧠
-- **Internal Transfers:** Moving money between your accounts seamlessly.
-- **GraphQL Integration:** Powerful queries for fetching accounts and generating custom reports for specific periods.
-
-### Phase 3: Really Viable Product (The "Fintech" Level)
-
-- **Multi-Currency & FX:** Optimized currency conversion with smart caching and real-time rates.
-- **Virtual Envelopes:** Savings goals and "funds" to organize your money without opening new bank accounts.
-- **Debt Tracking:** A dedicated system to manage who owes you and who you owe. 📝
-- **Bank Integrations:** Direct sync with **Monobank & Privatbank** APIs.
-- **Advanced Account Types:** Support for credit cards, investments, and more.
+- **Secure Auth** — Full JWT authentication flow with custom `@ActiveUser` decorators, guards, and Redis-backed refresh token invalidation
+- **Account Management** — Create and manage multiple accounts (card, cash, credit, debt)
+- **Transaction Engine** — Record, Adjust, and Void transactions with isolated business logic per type
+- **Strategy Pattern** — `IncomeStrategy` and `ExpenseStrategy` handle balance updates polymorphically. New transaction type = new strategy, zero changes to existing code
+- **Smart Categories** — Predefined categories seeded automatically on registration, plus custom user categories
+- **Financial Precision** — Powered by `decimal.js`. No `0.1 + 0.2 = 0.30000000000000004` nonsense 🧮
+- **Event-Driven** — `UserRegistered` event triggers category seeding, keeping registration logic decoupled
+- **Strict Validation** — `class-validator` with `forbidNonWhitelisted` to keep the API clean and predictable
 
 ## 🏗 Architecture Highlights
 
-- **CQRS:** Commands and Queries are separated to keep the logic clean and maintainable.
-- **DDD Naming:** We use financial terms like `Record`, `Adjust`, and `Void` instead of generic `Create/Update/Delete`.
-- **Type Safety:** Leveraging TypeScript to the max to catch errors before they even happen.
+- **Strategy Pattern** — transaction types have isolated, swappable balance logic. Open for extension, closed for modification
+- **Event-Driven Architecture** — domain events decouple side effects from core flows
+- **Repository Pattern** — clean data access abstraction via TypeORM repositories
+- **Type Safety** — TypeScript throughout, from DTOs to entities, catching errors before runtime
+
+## ☁️ Deployment & Observability
+
+Deployed on **AWS EC2** with **RDS (PostgreSQL)** as the managed database.
+
+Request metrics are tracked via a global `RequestMetricsInterceptor` and pushed to **AWS CloudWatch**:
+
+| Metric | Description |
+|---|---|
+| `HttpTotalRequests` | Total number of incoming requests |
+| `HttpRequestsByStatus` | Request count grouped by status class (2xx, 4xx, 5xx) |
+| `HttpLatency` | Response time per request in milliseconds |
+| `HttpErrors` | Count of failed requests (non-2xx) |
+
+## 🚀 Roadmap
+
+### Phase 2 — The "Pro" Feel
+
+- **Internal Transfers** — moving money between accounts seamlessly
+- **Swagger Documentation** — auto-generated API docs via `@nestjs/swagger`
+- **GraphQL** — powerful queries for accounts and custom period reports
+
+### Phase 3 — The "Fintech" Level
+
+- **Multi-Currency & FX** — optimized conversion with smart caching and real-time rates
+- **Virtual Envelopes** — savings goals without opening new bank accounts
+- **Debt Tracking** — a dedicated system for who owes what 📝
+- **Bank Integrations** — direct sync with Monobank & Privatbank APIs
 
 ## 💬 A Note from the Architect
 
-> "I believe that backend development is an art. This project is my canvas where I practice Clean Code, DDD, and SOLID. It’s about building something that I’m proud to show to other 'dark passengers' of the dev world." 🕵️‍♂️
+> "Backend development, done right, is an art. This is where I practice — clean architecture, precise calculations, and code that's built to last and easy to extend."
 
-### 🛠 How to start?
+## 🛠 How to start
 
-```
+```bash
 # Install dependencies
 $ npm install
 
