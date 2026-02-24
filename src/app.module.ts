@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IamModule } from './iam/iam.module';
 import { FinanceModule } from './finance/finance.module';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CloudWatchModule } from './cloudwatch/cloudwatch.module';
 
