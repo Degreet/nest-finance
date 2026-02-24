@@ -1,10 +1,10 @@
 {
   "name": "nest-finance",
   "version": "0.0.1",
-  "description": "Backend service for personal finance management: income, expenses, bills, and basic analytics. Built on NestJS.",
-  "author": "",
+  "description": "Personal finance REST API built with NestJS — clean architecture, strategy pattern, and decimal precision.",
+  "author": "Mykyta Voitsekhovskyi <mykyta@kodo.do>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
