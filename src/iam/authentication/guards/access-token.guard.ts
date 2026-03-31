@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 
 import { Request } from 'express';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, TokenExpiredError } from '@nestjs/jwt';
 
 import type { ConfigType } from '@nestjs/config';
 import jwtConfig from '../../config/jwt.config';
@@ -28,13 +28,12 @@ export class AccessTokenGuard implements CanActivate {
       throw new UnauthorizedException('No token provided');
     }
     try {
-      const payload = await this.jwtService.verifyAsync(
+      request[REQUEST_USER_KEY] = await this.jwtService.verifyAsync(
         token,
         this.jwtConfiguration,
       );
-      request[REQUEST_USER_KEY] = payload;
-    } catch (err) {
-      if (err.name === 'TokenExpiredError') {
+    } catch (err: unknown) {
+      if (err instanceof TokenExpiredError) {
         throw new UnauthorizedException('Token expired');
       }
       throw new UnauthorizedException('Invalid token');
